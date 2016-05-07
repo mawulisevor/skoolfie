@@ -1,0 +1,123 @@
+<?php
+
+namespace frontend\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "student".
+ *
+ * @property string $studid
+ * @property string $lname
+ * @property string $mname
+ * @property string $oname
+ * @property string $progid
+ * @property integer $currentlevel
+ * @property integer $admissionlevel
+ * @property string $sex
+ * @property string $phone
+ * @property string $email
+ * @property string $admdate
+ * @property string $birthdate
+ * @property string $gradgroup
+ * @property integer $semsdone
+ * @property double $totalgp
+ * @property integer $totalcredit
+ * @property double $cgpa
+ * @property string $certclass
+ *
+ * @property Enroll[] $enrolls
+ * @property Course[] $courses
+ * @property Acprog $prog
+ */
+class Student extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'student';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['studid', 'lname', 'currentlevel', 'admissionlevel', 'sex', 'admdate', 'gradgroup'], 'required'],
+            [['currentlevel', 'admissionlevel', 'semsdone', 'totalcredit'], 'integer'],
+            [['admdate', 'birthdate'], 'safe'],
+            [['totalgp', 'cgpa'], 'number'],
+            [['studid'], 'string', 'max' => 20],
+            [['lname', 'mname'], 'string', 'max' => 70],
+            [['oname'], 'string', 'max' => 100],
+            [['progid', 'phone', 'gradgroup'], 'string', 'max' => 15],
+            [['sex'], 'string', 'max' => 1],
+            [['email'], 'string', 'max' => 150],
+            [['certclass'], 'string', 'max' => 45],
+            [['studid'], 'unique']
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'studid' => 'Student ID',
+            'lname' => 'Last Name',
+            'mname' => 'Middle Name',
+            'oname' => 'Other Names',
+            'progid' => 'Program ID',
+            'currentlevel' => 'Current Level',
+            'admissionlevel' => 'Admission Level',
+            'sex' => 'Sex',
+            'phone' => 'Phone',
+            'email' => 'Email',
+            'admdate' => 'Admdate',
+            'birthdate' => 'Birthdate',
+            'gradgroup' => 'Gradgroup',
+            'semsdone' => 'Semsdone',
+            'totalgp' => 'Totalgp',
+            'totalcredit' => 'Totalcredit',
+            'cgpa' => 'Cgpa',
+            'certclass' => 'Certclass',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEnrolls()
+    {
+        return $this->hasMany(Enroll::className(), ['studid' => 'studid']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCourses()
+    {
+        return $this->hasMany(Course::className(), ['courseid' => 'courseid'])->viaTable('enroll', ['studid' => 'studid']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProg()
+    {
+        return $this->hasOne(Acprog::className(), ['progid' => 'progid']);
+    }
+
+    /**
+     * @inheritdoc
+     * @return StudentQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new StudentQuery(get_called_class());
+    }
+}

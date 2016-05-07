@@ -1,0 +1,85 @@
+<?php
+
+namespace frontend\models;
+
+use Yii;
+
+/**
+ * This is the model class for table "result".
+ *
+ * @property string $name
+ * @property string $index_no.
+ * @property string $title
+ * @property string $courseid
+ * @property integer $ca
+ * @property integer $exams
+ * @property integer $total
+ * @property integer $cr
+ * @property string $gr
+ * @property double $gp
+ * @property integer $level
+ * @property string $year
+ * @property integer $semester
+ */
+class Result extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'result';
+    }
+	public function primaryKey(){
+            return 'studid';
+        }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['index_no.', 'title', 'courseid', 'cr', 'level', 'semester'], 'required'],
+            [['ca', 'exams', 'total', 'cr', 'level', 'semester'], 'integer'],
+            [['gp'], 'number'],
+            [['name'], 'string', 'max' => 242],
+            [['index_no.', 'year'], 'string', 'max' => 20],
+            [['title'], 'string', 'max' => 100],
+            [['courseid'], 'string', 'max' => 10],
+            [['gr'], 'string', 'max' => 2]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'name' => 'Name',
+            'index_no.' => 'Index No',
+            'title' => 'Title',
+            'courseid' => 'Courseid',
+            'ca' => 'Ca',
+            'exams' => 'Exams',
+            'total' => 'Total',
+            'cr' => 'Cr',
+            'gr' => 'Gr',
+            'gp' => 'Gp',
+            'level' => 'Level',
+            'year' => 'Year',
+            'semester' => 'Semester',
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     * @return ResultQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new ResultQuery(get_called_class());
+    }
+}
